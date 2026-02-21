@@ -9,16 +9,18 @@ import {Server} from "socket.io";
 
 const app = express()
 const server = http.createServer(app)
+
 app.use(cors({
-  origin: "http://localhost:5173", 
-  credentials: true                
+  origin: true,       // allow all (safe for now)
+  credentials: true
 }));
-export const io = new Server (server,{
-    cors:{
-    origin: "http://localhost:5173",
+
+export const io = new Server(server,{
+  cors:{
+    origin: true,
     credentials: true
   }
-})
+});
 
 export const userSocketMap={}
 

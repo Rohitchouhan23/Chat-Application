@@ -70,14 +70,15 @@ export const AuthProvider=({children})=>{
         const newSocket = io(backendUrl,{
             query:{
                 userId: userData._id,
+                 withCredentials: true,
             }
         });
         newSocket.connect();
         setSocket(newSocket);
 
-        newSocket.on("getOnlineUser", (userIds)=>{
-            setOnlineUsers(userIds);
-        })
+        newSocket.on("getOnlineUsers", (userIds)=>{
+  setOnlineUsers(userIds);
+})
     }
 
     useEffect(()=>{
