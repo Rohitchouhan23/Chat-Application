@@ -35,7 +35,9 @@ io.on("connection",(socket)=>{
         io.emit("getOnlineUsers", Object.keys(userSocketMap))
     })
 })
-
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
 app.use(express.json({limit:"4mb"}));
 app.use(cors());
 app.use("/api/status", (req,res)=>res.send("server is live")) 
