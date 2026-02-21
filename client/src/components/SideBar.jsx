@@ -1,7 +1,7 @@
 import React,{useContext, useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import favicon from "../assets/favicon.png";
-import Menulogo from '../assets/menulogo.png';
+import Menulogo from '../assets/Menulogo.png';
 import { assets } from '../assets/Dumy.js';
 import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
