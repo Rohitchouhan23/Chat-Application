@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { assets } from "../assets/Dumy";
+import React, { useState, useContext } from "react";
 import arrowicon from "../assets/arrow_icon.png";
 import logo from "../assets/favicon.png";
-import { useContext } from "react";
-import {AuthContext} from '../../context/AuthContext'
+import { AuthContext } from "../../context/AuthContext";
 
 function Login() {
   const [currState, setCurrState] = useState("Sign Up");
@@ -12,9 +10,11 @@ function Login() {
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false); // ✅ NEW
 
-  const {login} =useContext(AuthContext)
-  const onSumbitHandler = (e) => {
+  const { login } = useContext(AuthContext);
+
+  const onSumbitHandler = async (e) => {
     e.preventDefault();
 
     if (currState === "Sign Up" && !isDataSubmitted) {
@@ -22,7 +22,17 @@ function Login() {
       return;
     }
 
-    login(currState==="Sign Up"?'signup':'login',{fullName,email,password,bio})
+    try {
+      setLoading(true); // 🔒 lock button
+      await login(
+        currState === "Sign Up" ? "signup" : "login",
+        { fullName, email, password, bio }
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false); // 🔓 unlock
+    }
   };
 
   return (
@@ -38,7 +48,7 @@ function Login() {
       >
         <h2 className="font-medium text-xl flex justify-between items-center">
           {currState}
-          {isDataSubmitted && (
+          {isDataSubmitted && !loading && (
             <img
               onClick={() => setIsDataSubmitted(false)}
               src={arrowicon}
@@ -56,6 +66,7 @@ function Login() {
             className="p-2 border border-gray-500 rounded-md focus:outline-none"
             placeholder="Full Name"
             required
+            disabled={loading}
           />
         )}
 
@@ -68,6 +79,7 @@ function Login() {
               placeholder="Email"
               className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2"
               required
+              disabled={loading}
             />
             <input
               type="password"
@@ -76,6 +88,7 @@ function Login() {
               placeholder="Password"
               className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2"
               required
+              disabled={loading}
             />
           </>
         )}
@@ -89,19 +102,28 @@ function Login() {
             focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Provide A Short Bio..."
             required
+            disabled={loading}
           />
         )}
 
         <button
           type="submit"
-          className="py-3 bg-linear-to-r from-purple-400 to-violet-600 
-          text-white rounded-md cursor-pointer"
+          disabled={loading}
+          className={`py-3 bg-linear-to-r from-purple-400 to-violet-600 
+          text-white rounded-md 
+          ${loading ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
         >
-          {currState === "Sign Up" ? "Create Account" : "Login Now"}
+          {loading
+            ? currState === "Sign Up"
+              ? "Signing Up..."
+              : "Logging In..."
+            : currState === "Sign Up"
+            ? "Create Account"
+            : "Login Now"}
         </button>
 
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <input type="checkbox" required />
+          <input type="checkbox" required disabled={loading} />
           <p>Agree to the Term of use & privacy policy</p>
         </div>
 
@@ -111,8 +133,10 @@ function Login() {
               Already have an account{" "}
               <span
                 onClick={() => {
-                  setCurrState("Login");
-                  setIsDataSubmitted(false);
+                  if (!loading) {
+                    setCurrState("Login");
+                    setIsDataSubmitted(false);
+                  }
                 }}
                 className="font-medium text-violet-500 cursor-pointer"
               >
@@ -123,7 +147,7 @@ function Login() {
             <p className="text-sm text-gray-600">
               Don't have an account{" "}
               <span
-                onClick={() => setCurrState("Sign Up")}
+                onClick={() => !loading && setCurrState("Sign Up")}
                 className="font-medium text-violet-500 cursor-pointer"
               >
                 Click here

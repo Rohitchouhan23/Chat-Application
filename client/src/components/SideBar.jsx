@@ -2,7 +2,7 @@ import React,{useContext, useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import favicon from "../assets/favicon.png";
 import Menulogo from '../assets/Menulogo.png';
-import { assets } from '../assets/Dumy.js';
+import avatar from '../assets/avatar_icon.png';
 import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
 
@@ -55,7 +55,7 @@ function SideBar() {
                 key={index}
                 className={`relative flex items-center gap-2 pl-4 p-2 pt-4 rounded cursor-pointer max-sm:text-sm ${selectedUser ?._id === user._id && 'bg-[#282142]/50'}`}>
                     <img
-                        src={user?.profilePic || assets.avatar_icon}
+                        src={user?.profilePic || avatar}
                         alt=""
                         className={`aspect-square object-cover rounded-full transition-all duration-200 
                         ${input ? "w-8 h-8" : "w-12 h-12"}`}
